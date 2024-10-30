@@ -1,30 +1,50 @@
 # What is Amazon EKS?<a name="what-is-eks"></a>
 
-Amazon Elastic Kubernetes Service \(Amazon EKS\) is a managed service that eliminates the need to install, operate, and maintain your own Kubernetes control plane on Amazon Web Services \(AWS\)\. [https://kubernetes.io/docs/concepts/overview/](https://kubernetes.io/docs/concepts/overview/) is an open\-source system that automates the management, scaling, and deployment of containerized applications\.
+* Amazon EKS
+  * := managed service
+    * -> NO need to make by our own, about Kubernetes control plane
+      * install,
+      * operate,
+      * maintain
 
 ## Features of Amazon EKS<a name="eks-features"></a>
 
-The following are key features of Amazon EKS:
 
 **Secure networking and authentication**  
-Amazon EKS integrates your Kubernetes workloads with AWS [ networking](eks-networking.md) and security services\. It also integrates with AWS Identity and Access Management \(IAM\) to provide [authentication](cluster-auth.md) for your Kubernetes clusters\.
+* your Kubernetes workloads -- are integrated with -- 
+  * AWS [networking](eks-networking.md) &
+  * security services
+  * AWS IAM
+    * -> provide [authentication](cluster-auth.md) -- for -- your Kubernetes clusters
 
 **Easy cluster scaling**  
-Amazon EKS enables you to scale your Kubernetes clusters up and down easily based on the demand of your workloads\. Amazon EKS supports [horizontal Pod autoscaling](horizontal-pod-autoscaler.md) based on CPU or custom metrics, and [cluster autoscaling](autoscaling.md) based on the demand of the entire workload\.
+* types
+  * [cluster autoscaling](autoscaling.md)
+    * -- based on the -- demand of your workloads
+  * [horizontal Pod autoscaling](horizontal-pod-autoscaler.md)
+    * -- based on -- CPU or custom metrics
 
 **Managed Kubernetes experience**  
-You can make changes to your Kubernetes clusters using `[https://eksctl.io/](https://eksctl.io/)`, [AWS Management Console](https://console.aws.amazon.com/eks/), [AWS Command Line Interface \(AWS CLI\)](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/eks/index.html), [the API](https://docs.aws.amazon.com/eks/latest/APIReference/Welcome.html), [`kubectl`](install-kubectl.md), and [Terraform](https://tf-eks-workshop.workshop.aws/)\.
+* ways to make changes | your Kubernetes clusters
+  * `[eksctl](https://eksctl.io/)`,
+  * [AWS Management Console](https://console.aws.amazon.com/eks/),
+  * [AWS CLI](https://awscli.amazonaws.com/v2/documentation/api/latest/reference/eks/index.html),
+  * [AWS EKS API](https://docs.aws.amazon.com/eks/latest/APIReference/Welcome.html),
+  * [`kubectl`](install-kubectl.md),
+  * [Terraform](https://tf-eks-workshop.workshop.aws/)
 
 **High availability**  
-Amazon EKS provides [high availability](disaster-recovery-resiliency.md) for your control plane across multiple Availability Zones\.
+* [high availability](disaster-recovery-resiliency.md) -- for your -- control plane / ACROSS MULTIPLE Availability Zones
 
 **Integration with AWS services**  
-Amazon EKS integrates with other [AWS services](eks-integrations.md), providing a comprehensive platform for deploying and managing your containerized applications\. You can also more easily troubleshoot your Kubernetes workloads with various [observability](eks-observe.md) tools\.
+* allowed [AWS services](eks-integrations.md) / -- integrate -- with
+* Kubernetes workloads -- can be observed, via -- [observability](eks-observe.md) tools
 
-For details about other features of Amazon EKS, see [Amazon EKS features](https://aws.amazon.com/eks/features)\.
+* see [Amazon EKS features](https://aws.amazon.com/eks/features)
 
 ## Get started with Amazon EKS<a name="how-eks-works"></a>
 
+* TODO:
 To create your first cluster and its associated resources, see [Get started with Amazon EKS](getting-started.md)\. In general, getting started with Amazon EKS involves the following steps\.
 
 1. **Create a cluster** – Start by creating your cluster using `eksctl`, AWS Management Console, AWS CLI, or one of the AWS SDKs\.
