@@ -1,24 +1,59 @@
 # Monitor your cluster metrics with Prometheus<a name="prometheus"></a>
 
-[https://prometheus.io/](https://prometheus.io/) is a monitoring and time series database that scrapes endpoints\. It provides the ability to query, aggregate, and store collected data\. You can also use it for alerting and alert aggregation\. This topic explains how to set up Prometheus as either a managed or open source option\. Monitoring Amazon EKS control plane metrics is a common use case\.
+* goal
+  * set up Prometheus as
+    * managed option or
+    * open source option
+  * monitor Amazon EKS control plane metrics
 
-Amazon Managed Service for Prometheus is a Prometheus\-compatible monitoring and alerting service that makes it easy to monitor containerized applications and infrastructure at scale\. It is a fully\-managed service that automatically scales the ingestion, storage, querying, and alerting of your metrics\. It also integrates with AWS security services to enable fast and secure access to your data\. You can use the open\-source PromQL query language to query your metrics and alert on them\. Also, you can use alert manager in Amazon Managed Service for Prometheus to set up alerting rules for critical alerts\. You can then send these critical alerts as notifications to an Amazon SNS topic\.
+* [https://prometheus.io/](https://prometheus.io/)
+  * := monitoring & time series database / scrapes endpoints
+  * allows
+    * query,
+    * aggregate,
+    * store collected data
+    * alerting & alert aggregation
 
-For more information about how to use the Prometheus metrics after you turn them on, see the [https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html)\.
+* Amazon Managed Service for Prometheus
+  * allows
+    * making it easy to monitor
+      * containerized applications
+      * infrastructure at scale
+    * querying your metrics and alert -- via -- open-source PromQL query language
+    * using alert manager
+      * == set up alerting rules / critical alerts
+        * these critical alerts -- can be sent as -- notifications | an Amazon SNS topic
+  * == fully-managed service / automatically scales the
+    * ingestion,
+    * storage,
+    * querying,
+    * alerting of your metrics
+  * -- integrates with -- AWS security services
+  * see [https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html](https://docs.aws.amazon.com/prometheus/latest/userguide/what-is-Amazon-Managed-Service-Prometheus.html)
 
-There are several different options for using Prometheus with Amazon EKS:
-+ You can turn on Prometheus metrics when first creating an Amazon EKS cluster, which is covered by this topic\.
-+ If you already have an existing Amazon EKS cluster, you can create your own Prometheus scraper\. For more information, see [Create a scraper](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html#AMP-collector-create) in the *Amazon Managed Service for Prometheus User Guide*\.
-+ You can deploy Prometheus using Helm\. For more information, see [Deploy Prometheus using Helm](deploy-prometheus.md)\.
-+ You can view control plane raw metrics in Prometheus format\. For more information, see [View control plane raw metrics in Prometheus format](view-raw-metrics.md)\.
+* options for using Prometheus -- with -- Amazon EKS
+  + when first creating an Amazon EKS cluster -> turn on Prometheus metrics 
+  + if you ALREADY have an existing Amazon EKS cluster -> you can create your own Prometheus scraper
+    + see [Create a scraper](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html#AMP-collector-create)
+  + deploy Prometheus -- via -- Helm
+    + see [Deploy Prometheus using Helm](deploy-prometheus.md)
+  + view control plane raw metrics | Prometheus format
+    + see [View control plane raw metrics in Prometheus format](view-raw-metrics.md)
 
 ## Step 1: Turn on Prometheus metrics when creating a cluster<a name="turn-on-prometheus-metrics"></a>
 
-**Important**  
-Amazon Managed Service for Prometheus resources are outside of the cluster lifecycle and need to be maintained independent of the cluster\. When you delete your cluster, make sure to also delete any applicable scrapers to stop applicable costs\. For more information, see [Find and delete scrapers](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html#AMP-collector-list-delete) in the *Amazon Managed Service for Prometheus User Guide*\.
+* Amazon Managed Service for Prometheus resources
+  * 👀 outside of the cluster lifecycle 👀
+    * == need to be maintained independent of the cluster
+    * if you delete your cluster -> delete manually ANY applicable scrapers
+      * see [Find and delete scrapers](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-collector-how-to.html#AMP-collector-list-delete)
 
-When you create a new cluster, you can turn on the option to send metrics to Prometheus\. In the AWS Management Console, this option is in the **Configure observability** step of creating a new cluster\. For more information, see [Create an Amazon EKS cluster](create-cluster.md)\.
+* if you create a new cluster -> you can turn on the option to send metrics to Prometheus
+  * 👀way to turn on 👀
+    * **Configure observability** step of creating a new cluster | AWS Management Console
+      * see [Create an Amazon EKS cluster](create-cluster.md)
 
+* TODO:
 Prometheus discovers and collects metrics from your cluster through a pull\-based model called scraping\. Scrapers are set up to gather data from your cluster infrastructure and containerized applications\. 
 
 When you turn on the option to send Prometheus metrics, Amazon Managed Service for Prometheus provides a fully managed agentless scraper\. Use the following **Advanced configuration** options to customize the default scraper as needed\.
@@ -51,8 +86,16 @@ You must set up your `aws-auth` `ConfigMap` to give the scraper in\-cluster perm
 
 ## Step 2: View Prometheus scraper details<a name="viewing-prometheus-scraper-details"></a>
 
-After creating a cluster with the Prometheus metrics option turned on, you can view your Prometheus scraper details\. When viewing your cluster in the AWS Management Console, choose the **Observability ** tab\. A table shows a list of scrapers for the cluster, including information such as the scraper ID, alias, status, and creation date\.
+* view your cluster | AWS Management Console, & choose the **Observability ** tab
+* shows a list of scrapers / cluster
+  * information detailed
+    * scraper configuration,
+    * ARN,
+    * remote write URL,
+    * networking information
 
-To see more details about the scraper, choose a scraper ID link\. For example, you can view the scraper configuration, Amazon Resource Name \(ARN\), remote write URL, and networking information\. You can use the scraper ID as input to Amazon Managed Service for Prometheus API operations like `DescribeScraper` and `DeleteScraper`\. You can also use the API to create more scrapers\.
+* scraper ID
+  * uses
+    * -- input to -- Amazon Managed Service for Prometheus API operations (_Example:_ `DescribeScraper` and `DeleteScraper`)
 
-For more information on using the Prometheus API, see the [Amazon Managed Service for Prometheus API Reference](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-APIReference.html)\.
+* see the [Amazon Managed Service -- for -- Prometheus API Reference](https://docs.aws.amazon.com/prometheus/latest/userguide/AMP-APIReference.html)
