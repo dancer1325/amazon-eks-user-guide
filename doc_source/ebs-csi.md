@@ -1,23 +1,33 @@
 # Store Kubernetes volumes with Amazon EBS<a name="ebs-csi"></a>
 
-The [Amazon Elastic Block Store \(Amazon EBS\) Container Storage Interface \(CSI\) driver](https://github.com/kubernetes-sigs/aws-ebs-csi-driver/) manages the lifecycle of Amazon EBS volumes as storage for the *Kubernetes Volumes* that you create\. The Amazon EBS CSI driver makes Amazon EBS volumes for these types of Kubernetes volumes: generic [ephemeral volumes](https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/) and [persistent volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)\.
+* [Amazon Elastic Block Store \(Amazon EBS\) Container Storage Interface \(CSI\) driver](https://github.com/kubernetes-sigs/aws-ebs-csi-driver/) 
+  * makes Amazon EBS volumes / Kubernetes volumes
+    * == 👀Amazon EBS volumes -- are managed as -- Kubernetes Volumes 👀
+  * ALLOWED | 
+    * generic [ephemeral volumes](https://kubernetes.io/docs/concepts/storage/ephemeral-volumes/) 
+    * [persistent volumes](https://kubernetes.io/docs/concepts/storage/persistent-volumes/)
+   
 
 ## Considerations<a name="ebs-csi-considerations"></a>
-+ You can't mount Amazon EBS volumes to Fargate Pods\.
-+ You can run the Amazon EBS CSI controller on Fargate nodes, but the Amazon EBS CSI node DaemonSet can only run on Amazon EC2 instances\.
-+ Support will be provided for the latest add\-on version and one prior version\. Bugs or vulnerabilities found in the latest version will be backported to the previous release in a new minor version\.
-
-**Important**  
-To use the snapshot functionality of the Amazon EBS CSI driver, you must first install the CSI snapshot controller\. For more information, see [Enable snapshot functionality for CSI volumes](csi-snapshot-controller.md)\.
++ ❌NOT possible to mount Amazon EBS volumes | Fargate Pods ❌
++ Amazon EBS CSI controller can be run | Fargate nodes
++ Amazon EBS CSI node DaemonSet can ONLY run | Amazon EC2 instances
++ Support provided | 
+  + latest add\-on version &
+  + LATEST -1 version
+* if you want to use Amazon EBS CSI driver's snapshot functionality -> install CSI snapshot controller
+  * see [Enable snapshot functionality for CSI volumes](csi-snapshot-controller.md)
 
 ## Prerequisites<a name="ebs-csi-prereqs"></a>
-+ An existing cluster\. To see the required platform version, run the following command\.
-
-  ```
-  aws eks describe-addon-versions --addon-name aws-ebs-csi-driver
-  ```
-+ An existing AWS Identity and Access Management \(IAM\) OpenID Connect \(OIDC\) provider for your cluster\. To determine whether you already have one, or to create one, see [Create an IAM OIDC provider for your cluster](enable-iam-roles-for-service-accounts.md)\.
-+ If you're using a cluster wide restricted [`PodSecurityPolicy`](pod-security-policy.md), make sure that the add\-on is granted sufficient permissions to be deployed\. For the permissions required by each add\-on Pod, see the [relevant add\-on manifest definition](https://github.com/kubernetes-sigs/aws-ebs-csi-driver/tree/master/deploy/kubernetes/base) on GitHub\.
++ \| EXISTING cluster
+  + if you want to see the REQUIRED platform version -> run
+    ```
+    aws eks describe-addon-versions --addon-name aws-ebs-csi-driver
+    ```
++ TODO: An existing AWS Identity and Access Management \(IAM\) OpenID Connect \(OIDC\) provider for your cluster
+  + To determine whether you already have one, or to create one, see [Create an IAM OIDC provider for your cluster](enable-iam-roles-for-service-accounts.md)\.
++ If you're using a cluster wide restricted [`PodSecurityPolicy`](pod-security-policy.md), make sure that the add\-on is granted sufficient permissions to be deployed
+  + For the permissions required by each add\-on Pod, see the [relevant add\-on manifest definition](https://github.com/kubernetes-sigs/aws-ebs-csi-driver/tree/master/deploy/kubernetes/base) on GitHub\.
 
 ## Step 1: Create an IAM role<a name="csi-iam-role"></a>
 
