@@ -1,28 +1,52 @@
 # Simplify node lifecycle with managed node groups<a name="managed-node-groups"></a>
 
-Amazon EKS managed node groups automate the provisioning and lifecycle management of nodes \(Amazon EC2 instances\) for Amazon EKS Kubernetes clusters\.
+* Amazon EKS managed node groups
+  * 💡AUTOMATE the provisioning & lifecycle management of nodes \(== Amazon EC2 instances\) -- for -- Amazon EKS Kubernetes clusters 💡
+    * ❌== NOT need to SEPARATELY provision or register Amazon EC2 instances / provide compute capacity -- to -- run your Kubernetes applications ❌
+    * == enable -- via 1! operation -- 
+      * create                      nodes -- for - your cluster
+      * automatically update,       nodes -- for - your cluster /
+        * BEFORE drain the nodes' workloads
+      * terminate                   nodes -- for - your cluster /
+        * BEFORE drain the nodes' workloads
+    * 's nodes -- are provisioned as -- part of an Amazon EC2 Auto Scaling group /
+      * managed for you -- by -- Amazon EKS
+      * 👀ALL resources run | your AWS account 👀
+  * 👀ALL nodes runs ACROSS MULTIPLE Availability Zones / you define👀
 
-With Amazon EKS managed node groups, you don't need to separately provision or register the Amazon EC2 instances that provide compute capacity to run your Kubernetes applications\. You can create, automatically update, or terminate nodes for your cluster with a single operation\. Node updates and terminations automatically drain nodes to ensure that your applications stay available\.
+* | NEW or EXISTING clusters,
+  * ways to add a managed node group
+    * Amazon EKS console,
+    * `eksctl`,
+    * AWS CLI;
+    * AWS API,
+    * infrastructure as code tools 
+    * AWS CloudFormation
 
-Every managed node is provisioned as part of an Amazon EC2 Auto Scaling group that's managed for you by Amazon EKS\. Every resource including the instances and Auto Scaling groups runs within your AWS account\. Each node group runs across multiple Availability Zones that you define\.
+* managed node group's nodes
+  * 👀are AUTOMATICALLY tagged -- , by the [Kubernetes cluster autoscaler](autoscaling.md), for -- auto\-discovery👀
 
-You can add a managed node group to new or existing clusters using the Amazon EKS console, `eksctl`, AWS CLI; AWS API, or infrastructure as code tools including AWS CloudFormation\. Nodes launched as part of a managed node group are automatically tagged for auto\-discovery by the Kubernetes cluster autoscaler\. You can use the node group to apply Kubernetes labels to nodes and update them at any time\.
-
-There are no additional costs to use Amazon EKS managed node groups, you only pay for the AWS resources you provision\. These include Amazon EC2 instances, Amazon EBS volumes, Amazon EKS cluster hours, and any other AWS infrastructure\. There are no minimum fees and no upfront commitments\.
-
-To get started with a new Amazon EKS cluster and managed node group, see [Get started with Amazon EKS – AWS Management Console and AWS CLI](getting-started-console.md)\.
-
-To add a managed node group to an existing cluster, see [Create a managed node group for your cluster](create-managed-node-group.md)\.
+* costs
+  * ❌NO additional costs❌
+    * == ONLY pay -- for the -- AWS resources / you provision
+  * ❌NO 
+    * minimum fees
+    * upfront commitments❌
 
 ## Managed node groups concepts<a name="managed-node-group-concepts"></a>
-+ Amazon EKS managed node groups create and manage Amazon EC2 instances for you\.
-+ Every managed node is provisioned as part of an Amazon EC2 Auto Scaling group that's managed for you by Amazon EKS\. Moreover, every resource including Amazon EC2 instances and Auto Scaling groups run within your AWS account\.
-+ The Auto Scaling group of a managed node group spans every subnet that you specify when you create the group\.
-+ Amazon EKS tags managed node group resources so that they are configured to use the Kubernetes [Cluster Autoscaler](autoscaling.md)\.
-**Important**  
-If you are running a stateful application across multiple Availability Zones that is backed by Amazon EBS volumes and using the Kubernetes [Scale cluster compute with Karpenter and Cluster Autoscaler](autoscaling.md), you should configure multiple node groups, each scoped to a single Availability Zone\. In addition, you should enable the `--balance-similar-node-groups` feature\.
-+ You can use a custom launch template for a greater level of flexibility and customization when deploying managed nodes\. For example, you can specify extra `kubelet` arguments and use a custom AMI\. For more information, see [Customize managed nodes with launch templates](launch-templates.md)\. If you don't use a custom launch template when first creating a managed node group, there is an auto\-generated launch template\. Don't manually modify this auto\-generated template or errors occur\.
-+ Amazon EKS follows the shared responsibility model for CVEs and security patches on managed node groups\. When managed nodes run an Amazon EKS optimized AMI, Amazon EKS is responsible for building patched versions of the AMI when bugs or issues are reported\. We can publish a fix\. However, you're responsible for deploying these patched AMI versions to your managed node groups\. When managed nodes run a custom AMI, you're responsible for building patched versions of the AMI when bugs or issues are reported and then deploying the AMI\. For more information, see [Update a managed node group for your cluster](update-managed-node-group.md)\. 
+
++ | create Managed node group
+  + 's Auto Scaling group spans ALL subnet / you specify (TODO: ❓)
+
++ ⚠️if you are running a stateful application ACROSS MULTIPLE Availability Zones / backed by Amazon EBS volumes & using the Kubernetes [cluster Autoscaler](autoscaling.md) -> 
+  + configure MULTIPLE node group / 1 / EACH Availability Zone
+  + enable the `--balance-similar-node-groups` feature ⚠️
++ 👀| deploy managed nodes, recommended to use a [CUSTOM launch template](launch-templates.md) 👀
+  + _Example:_ specify extra `kubelet` arguments & use a custom AMI
+  + if | create a managed node group, you do NOT use a custom launch template -> EXIST auto\-generated launch template
+    + NOT MANUALLY modify this auto\-generated template
+      + Reason: 🧠 errors can occur🧠
++ TODO: Amazon EKS follows the shared responsibility model for CVEs and security patches on managed node groups\. When managed nodes run an Amazon EKS optimized AMI, Amazon EKS is responsible for building patched versions of the AMI when bugs or issues are reported\. We can publish a fix\. However, you're responsible for deploying these patched AMI versions to your managed node groups\. When managed nodes run a custom AMI, you're responsible for building patched versions of the AMI when bugs or issues are reported and then deploying the AMI\. For more information, see [Update a managed node group for your cluster](update-managed-node-group.md)\. 
 + Amazon EKS managed node groups can be launched in both public and private subnets\. If you launch a managed node group in a public subnet on or after April 22, 2020, the subnet must have `MapPublicIpOnLaunch` set to true for the instances to successfully join a cluster\. If the public subnet was created using `eksctl` or the [Amazon EKS vended AWS CloudFormation templates](creating-a-vpc.md) on or after March 26, 2020, then this setting is already set to true\. If the public subnets were created before March 26, 2020, you must change the setting manually\. For more information, see [Modifying the public `IPv4` addressing attribute for your subnet](https://docs.aws.amazon.com/vpc/latest/userguide/vpc-ip-addressing.html#subnet-public-ip)\.
 + When deploying a managed node group in private subnets, you must ensure that it can access Amazon ECR for pulling container images\. You can do this by connecting a NAT gateway to the route table of the subnet or by adding the following [AWS PrivateLink VPC endpoints](https://docs.aws.amazon.com/AmazonECR/latest/userguide/vpc-endpoints.html#ecr-setting-up-vpc-create):
   + Amazon ECR API endpoint interface – `com.amazonaws.region-code.ecr.api`
